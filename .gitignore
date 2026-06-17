@@ -1,0 +1,17 @@
+.env
+.env.local
+uploads/
+tmp/
+.DS_Store
+
+# Go
+bin/
+dist/
+*.exe
+
+# IDE
+.idea/
+.vscode/.env
+.DS_Store
+.idea/
+uploads/

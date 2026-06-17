@@ -1,0 +1,13 @@
+POST http://localhost:8080/api/faces/verify-image
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3ODE3Mjk3NDcsInJvbGUiOiJBRE1JTiIsInVzZXJfaWQiOjF9.WDNspyWhywbQNlqD_PS7yf99wAb4D0TY-p7c8xjbLi8
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="door_id"
+
+--boundary
+Content-Disposition: form-data; name="image"; filename="Ced.png"
+Content-Type: image/png
+
+< /Users/lallene/Projet GO/smart_face/backend/uploads/faces/Ced.png
+--boundary--
