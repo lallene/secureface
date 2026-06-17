@@ -1,0 +1,12 @@
+.git
+.github
+.idea
+.vscode
+
+.env
+
+uploads
+
+tmp
+
+*.log
