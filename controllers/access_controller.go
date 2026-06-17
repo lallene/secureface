@@ -10,7 +10,6 @@ import (
 )
 
 type OpenAccessInput struct {
-	UserID uint `json:"user_id"`
 	DoorID uint `json:"door_id"`
 }
 
@@ -22,15 +21,25 @@ func OpenAccess(c *gin.Context) {
 		return
 	}
 
+	userIDValue, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Utilisateur non authentifié",
+		})
+		return
+	}
+
+	userID := userIDValue.(uint)
+
 	var permission models.AccessPermission
 
 	err := config.DB.
-		Where("user_id = ? AND door_id = ? AND can_access = ?", input.UserID, input.DoorID, true).
+		Where("user_id = ? AND door_id = ? AND can_access = ?", userID, input.DoorID, true).
 		First(&permission).Error
 
 	if err != nil {
 		log := models.AccessLog{
-			UserID:   &input.UserID,
+			UserID:   &userID,
 			DoorID:   input.DoorID,
 			Status:   "DENIED",
 			Reason:   "Permission inexistante ou refusée",
@@ -56,7 +65,7 @@ func OpenAccess(c *gin.Context) {
 	config.DB.Save(&door)
 
 	log := models.AccessLog{
-		UserID:   &input.UserID,
+		UserID:   &userID,
 		DoorID:   input.DoorID,
 		Status:   "GRANTED",
 		Reason:   "Permission valide",
