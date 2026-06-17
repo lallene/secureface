@@ -60,4 +60,10 @@ func SetupRoutes(r *gin.Engine) {
 	{
 		admin.POST("/retention/clean-face-images", controllers.CleanExpiredFaceImages)
 	}
+
+	r.GET("/health", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"status": "ok",
+		})
+	})
 }
