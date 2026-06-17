@@ -44,17 +44,21 @@ func RegisterFace(c *gin.Context) {
 		return
 	}
 
-	encryptedVector, err := utils.EncryptFaceVector(input.FaceVector)
+	embeddingPath, err := utils.SaveEncryptedFaceVector(
+		input.UserID,
+		input.FaceVector,
+	)
+
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Erreur chiffrement empreinte faciale",
+			"error": "Erreur sauvegarde empreinte faciale chiffrée",
 		})
 		return
 	}
 
 	face := models.FaceProfile{
 		UserID:         input.UserID,
-		FaceVector:     encryptedVector,
+		EmbeddingPath:  embeddingPath,
 		ImagePath:      "",
 		ImageExpiresAt: &expiresAt,
 		IsVerified:     true,

@@ -6,6 +6,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"io"
 	"os"
 )
@@ -52,7 +53,6 @@ func DecryptFaceVector(encryptedText string) (string, error) {
 	}
 
 	nonceSize := aesGCM.NonceSize()
-
 	if len(data) < nonceSize {
 		return "", errors.New("données chiffrées invalides")
 	}
@@ -65,4 +65,33 @@ func DecryptFaceVector(encryptedText string) (string, error) {
 	}
 
 	return string(plainText), nil
+}
+
+func SaveEncryptedFaceVector(userID uint, plainText string) (string, error) {
+	encryptedText, err := EncryptFaceVector(plainText)
+	if err != nil {
+		return "", err
+	}
+
+	dir := "storage/embeddings"
+	if err := os.MkdirAll(dir, 0700); err != nil {
+		return "", err
+	}
+
+	filePath := fmt.Sprintf("%s/user_%d_face.enc", dir, userID)
+
+	if err := os.WriteFile(filePath, []byte(encryptedText), 0600); err != nil {
+		return "", err
+	}
+
+	return filePath, nil
+}
+
+func LoadEncryptedFaceVector(filePath string) (string, error) {
+	encryptedText, err := os.ReadFile(filePath)
+	if err != nil {
+		return "", err
+	}
+
+	return DecryptFaceVector(string(encryptedText))
 }
